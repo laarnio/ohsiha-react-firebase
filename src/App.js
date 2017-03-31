@@ -2,59 +2,48 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import * as firebase from 'firebase';
-class App extends Component {
+import Login from './components/login';
+import Profile from './components/profile';
+import Articles from './components/articleList';
+import SignUp from './components/SignUp';
+import ArticleAdd from './components/articleAdd';
+import ArticleEdit from './components/articleEdit';
 
-  
+class App extends Component {
   constructor() {
     super();
     this.state = {
-      User: 'Loading'
+      user: null,
+      view: 'login'
     };
+
+    this.setLogIn = this.setLogIn.bind(this);
+    this.logout = this.logout.bind(this);
+    this.showView = this.showView.bind(this);
+    this.setArticle = this.setArticle.bind(this);
   }
 
-  componentDidMount() {
-    // const rootRef = firebase.database().ref().child('user');
-    // const userRef = rootRef.child('9N5BUAM0NxScnSpRQdO9qxhKbqj2');
-    // const nameRef = userRef.child('name');
-    
-    firebase.auth().onAuthStateChanged(firebaseuser => {
-      if(firebaseuser) {
-        var ref = firebase.database().ref('user/'+firebaseuser.uid).child('nick');
-        ref.on('value', result => {
-          this.setState({
-            User: 'Hello ' + result.val(),
-            Login: '',
-            Email: '',
-            Password: '',
-            Logout: <button onClick={this.logout} className="btn btn-primary">Logout</button>
-          });
-        });
-        
-        
-        
-        console.log(firebaseuser.email);
-      } else {
-        this.setState({
-          User: 'Not logged',
-          Email: <input className="form-control" ref={(email) => this.email = email} placeholder="Email"/> ,
-          Password: <input type="password" className="form-control" placeholder="Password" ref={(pw) => this.pw = pw} /> ,
-          Login: <button type="submit" className="btn btn-primary">Login</button>,
-          Logout: ''
-        });  
-      }
+  setLogIn(user) {
+    this.setState({
+      user: user,
+      view: 'profile'
     });
-
   }
+
   logout() {
     console.log('ulos');
-    firebase.auth().signOut();
+    alert('Hei hei!');
+    firebase.auth().signOut().then(() => this.setState({user: null, view: 'login'}));
+    
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault()
-    const auth = firebase.auth();
-    const promise = auth.signInWithEmailAndPassword(this.email.value, this.pw.value);
-    promise.catch(e => console.log(e.message));
+  showView(viewName) {
+    this.setState({view: viewName});
+  }
+  setArticle(key) {
+    this.setState({articleKey: key});
+    this.showView('editArticle');
+
   }
 
   render() {
@@ -64,15 +53,29 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Ohsiha</h2>
         </div>
-        <p className="App-intro">
-          {this.state.User}
-        </p>
-        <form onSubmit={this.handleSubmit}>
-          {this.state.Email}
-          {this.state.Password}
-          {this.state.Login}
-          {this.state.Logout}
-        </form>
+        {this.state.user ? 
+        <ul>
+          <li onClick={() => this.showView('main')}>main</li>
+          <li onClick={() => this.showView('profile')}>profile</li>
+          <li onClick={() => this.showView('articles')}>articles</li>
+          <button onClick={this.logout} className="btn btn-primary">Logout</button>
+        </ul>
+        : ''}
+        {this.state.user ?
+        <div>
+          <p className="App-intro">
+            Username: {this.state.user.nick}
+          </p>
+        </div>
+        : ''}
+        
+        {this.state.view === 'login' ? <Login showView={this.showView} setLogIn={this.setLogIn} /> : ''}
+        {this.state.view === 'profile' ? <Profile userId={this.state.user.uid} /> : ''}
+        {this.state.view === 'articles' ? <Articles setArticle={this.setArticle} showView={this.showView} /> : ''}
+        {this.state.view === 'signup' ? <SignUp showView={this.showView} />: ''}
+        {this.state.view === 'addArticle' ? <ArticleAdd /> : ''}
+        {this.state.view === 'editArticle' ? <ArticleEdit showView={this.showView} articleKey={this.state.articleKey} />: ''}
+
       </div>
     );
   }
