@@ -44,8 +44,9 @@ class ArticleList extends Component {
           {this.articles.map(function(article) {
             return (<li key={article.article}>Title: {article.title} <br />
               Article: {article.article} 
-              <li onClick={() => this.handleDelete(article.key)}>Delete</li>
-              <li onClick={() => this.props.setArticle(article.key)}>Edit</li>
+              <br />
+              <button onClick={() => this.handleDelete(article.key)}>Delete</button>
+              <button onClick={() => this.props.setArticle(article.key)}>Edit</button>
               <br /> <br />
               </li>
               );
