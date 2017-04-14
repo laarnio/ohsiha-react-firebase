@@ -11,14 +11,18 @@ class Login extends Component {
   componentDidMount() {
     firebase.auth().onAuthStateChanged(firebaseUser => {
       if (firebaseUser) {
-        var ref = firebase.database().ref('user/' + firebaseUser.uid);
+        this.ref = firebase.database().ref('user/' + firebaseUser.uid);
 
-        ref.on('value', result => {
+        this.ref.on('value', result => {
           console.log(result.val());
           this.props.setLogIn(Object.assign({uid: firebaseUser.uid}, result.val()));
         });        
       }
     });
+  }
+  
+  componentWillUnmount(){
+    this.ref.off('value');
   }
 
   handleSubmit = (e) => {

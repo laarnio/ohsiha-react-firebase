@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import ArticleAdd from './articleAdd';
+import _ from 'lodash';
+import axios from 'axios';
+
+
 
 class ArticleList extends Component {
   constructor(props) {
@@ -8,29 +12,48 @@ class ArticleList extends Component {
     this.state = {
       articles: []
     };
-    this.articles = [];
+
+    console.log('construct');
+
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.articleRef = firebase.database().ref('article');
-    this.articleRef.on('child_added', (articles) => {
+    this.articleRef.on('value', (articles) => {
+      const newArticles = _(articles.val())
+        .mapValues((value, key) => {
+          return _.extend(value, {key: key});
+        })
+        .values()
+        .value();
 
-      const newArticle = Object.assign(articles.val(), {key: articles.key});
+      console.log('uudet artikkelit');
 
-      this.articles.push(newArticle);
-      this.setState({articles: articles.val()});
-    });
-    
+      this.setState({articles: newArticles});
+    });    
   }
+
+  componentWillUnmount () {
+    this.articleRef.off('value');
+  }
+
   testPrint() {
-    console.log(this.articles[2]);
+    axios({url:'https://publish.twitter.com/oembed?url=https://twitter.com/Interior/status/463440424141459456',
+          method: 'get'})
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   }
+
   handleDelete(key) {
     firebase.database().ref('article/' + key).remove();
   }
 
   render () {
-    console.log(this.articles);
     return(
       <div>
       <h1>Articles</h1>
@@ -41,17 +64,18 @@ class ArticleList extends Component {
           <li onClick={() => this.testPrint()}>Testii</li>
         </div>
         <ul>
-          {this.articles.map(function(article) {
-            return (<li key={article.article}>Title: {article.title} <br />
+          {this.state.articles.map((article) => {
+            return (<li key={article.key}>Title: {article.title} <br />
               Article: {article.article} 
               <br />
-              <button onClick={() => this.handleDelete(article.key)}>Delete</button>
-              <button onClick={() => this.props.setArticle(article.key)}>Edit</button>
+              Author: {article.author}
+              <br />
+              
+              {article.uid === this.props.userId ? <button onClick={() => this.handleDelete(article.key)}>Delete</button> :''}
+              {article.uid === this.props.userId ? <button onClick={() => this.props.setArticle(article.key)}>Edit</button> :''}
               <br /> <br />
-              </li>
-              );
-                   
-          }.bind(this))}
+            </li>);    
+          })}
         </ul>
       </div>
     );

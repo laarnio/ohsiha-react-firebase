@@ -8,6 +8,7 @@ class ArticleEdit extends Component {
       article: null
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount () {
@@ -18,10 +19,16 @@ class ArticleEdit extends Component {
     console.log(this.state.article);
     
   }
+
+  componentWillUnmount(){
+    this.articleRef.off('value');
+  }
+
   handleSubmit = (e) => {
-    //e.preventDefault();
+    e.preventDefault();
+
     this.articleRef.update(this.state.article);
-    
+    this.props.showView('articles');    
   }
 
   handleChange (evt) {

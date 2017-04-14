@@ -9,7 +9,7 @@ class Profile extends Component {
     };
 
     this.userId = props.userId;
-
+    console.log(this.userId);
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
   }
@@ -19,6 +19,9 @@ class Profile extends Component {
     this.userRef.on('value', (userInfo) => {
       this.setState({user: userInfo.val()}); 
     });
+  }
+  componentWillUnmount(){
+    this.userRef.off('value');
   }
 
   handleChange (evt) {

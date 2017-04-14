@@ -2,19 +2,31 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 
 class ArticleAdd extends Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
-      articles: []
+      articles: [],
+      user: null
     };
+    this.userId = props.userId;
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentWillMount () {
-    this.articleRef = firebase.database().ref('article');
-    this.articleRef.on('value', (articles) => {
-      this.setState({articles: articles}); 
+  componentDidMount () {
+    var tmpUser = null;
+    this.userRef = firebase.database().ref('user/' + this.userId);
+    this.userRef.on('value', (userInfo) => {
+      tmpUser = userInfo.val();
     });
+    this.setState({
+      user: tmpUser,
+    }); 
+  
   }
+    componentWillUnmount(){
+      this.userRef.off('value');
+  }
+  
   handleSubmit = (e) => {
     console.log(this.title.value);
     e.preventDefault();
@@ -23,8 +35,11 @@ class ArticleAdd extends Component {
     var articleAddRef = articleRef.child(newKey);
     articleAddRef.set({
       title: this.title.value,
-      article: this.article.value
+      article: this.article.value,
+      author: this.state.user.nick,
+      uid: this.userId
     });
+    this.props.showView('articles');
     
   }
 
