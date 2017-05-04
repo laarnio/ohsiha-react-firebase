@@ -15,13 +15,12 @@ class Profile extends Component {
   }
 
   componentDidMount () {
+
     this.userRef = firebase.database().ref('user/' + this.userId);
-    this.userRef.on('value', (userInfo) => {
+
+    this.userRef.once('value', (userInfo) => {
       this.setState({user: userInfo.val()}); 
     });
-  }
-  componentWillUnmount(){
-    this.userRef.off('value');
   }
 
   handleChange (evt) {
@@ -29,6 +28,7 @@ class Profile extends Component {
     this.setState({
       user: newUserInfo
     });
+    //this.userRef.update(newUserInfo);
   }
 
   handleBlur () {

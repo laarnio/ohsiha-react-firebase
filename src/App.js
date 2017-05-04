@@ -79,7 +79,7 @@ class App extends Component {
           userId={this.state.user.uid} /> : ''}
         {this.state.view === 'addArticle' ? <ArticleAdd showView={this.showView} userId={this.state.user.uid} /> : ''}
         {this.state.view === 'editArticle' ? <ArticleEdit showView={this.showView} articleKey={this.state.articleKey} />: ''}
-        {this.state.view === 'jsonreader' ? <JsonReader showView={this.showView} showView={this.showView} userId={this.state.user.uid} />: ''}
+        {this.state.view === 'jsonreader' ? <JsonReader showView={this.showView} userId={this.state.user.uid} />: ''}
 
       </div>
     );

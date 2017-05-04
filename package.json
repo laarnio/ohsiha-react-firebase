@@ -9,6 +9,7 @@
     "firebase-functions": "^0.5.5",
     "firebase-tools": "^3.6.1",
     "react": "^15.4.2",
+    "react-bootstrap": "^0.31.0",
     "react-dom": "^15.4.2",
     "request-promise": "^4.2.0",
     "webpack": "^2.3.3"

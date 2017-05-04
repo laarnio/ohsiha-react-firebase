@@ -13,18 +13,13 @@ class ArticleAdd extends Component {
   }
 
   componentDidMount () {
-    var tmpUser = null;
-    this.userRef = firebase.database().ref('user/' + this.userId);
-    this.userRef.on('value', (userInfo) => {
-      tmpUser = userInfo.val();
+    this.userReff = firebase.database().ref('user/' + this.userId);
+
+    this.userReff.once('value', (userInfo) => {
+      this.setState({user: userInfo.val()});
     });
-    this.setState({
-      user: tmpUser,
-    }); 
-  
-  }
-    componentWillUnmount(){
-      this.userRef.off('value');
+    
+    
   }
   
   handleSubmit = (e) => {

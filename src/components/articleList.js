@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
-import ArticleAdd from './articleAdd';
 import _ from 'lodash';
-import axios from 'axios';
 
 
 
@@ -39,14 +37,7 @@ class ArticleList extends Component {
   }
 
   testPrint() {
-    axios({url:'https://publish.twitter.com/oembed?url=https://twitter.com/Interior/status/463440424141459456',
-          method: 'get'})
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    
   }
 
   handleDelete(key) {
@@ -74,7 +65,7 @@ class ArticleList extends Component {
               {article.uid === this.props.userId ? <button onClick={() => this.handleDelete(article.key)}>Delete</button> :''}
               {article.uid === this.props.userId ? <button onClick={() => this.props.setArticle(article.key)}>Edit</button> :''}
               <br /> <br />
-            </li>);    
+            </li>);
           })}
         </ul>
       </div>

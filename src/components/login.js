@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
-import Profile from './profile';
 
 class Login extends Component {
   constructor(props) {
@@ -20,10 +19,10 @@ class Login extends Component {
       }
     });
   }
-  
-  componentWillUnmount(){
-    this.ref.off('value');
-  }
+
+//  componentWillUnmount(){
+ //   this.ref.off('value');
+ // }
 
   handleSubmit = (e) => {
     e.preventDefault()
